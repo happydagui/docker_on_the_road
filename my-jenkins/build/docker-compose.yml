@@ -1,0 +1,10 @@
+version: "2"
+services:
+  my-jenkins:
+    image: jenkins
+    volumes:
+      - "/media/dev/workspaces/docker/my-jenkins/jenkins_home:/var/jenkins_home"
+      - "/home/min/opt:/shares:ro"
+    expose:
+      - "8080"
+      - "50000"

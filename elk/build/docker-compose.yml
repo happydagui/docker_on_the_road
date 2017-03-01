@@ -1,0 +1,45 @@
+version: "2"
+services:
+  elasticsearch1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.2.1
+    # volumes:
+      # - esdata1:/usr/share/elasticsearch/data
+    expose:
+      - 9200
+      - 9300
+
+  kibana1:
+    image: centos
+    environment:
+      - JAVA_HOME=/opt/jdk1.8.0_111
+      - HOSTNAME=mykibana
+    links:
+      - elasticsearch1
+    volumes:
+      - "/home/min/opt/:/opt"
+      - "$PWD/kibana/kibana.yml:/opt/kibana-5.2.1-linux-x86_64/config/kibana.yml:ro"
+    expose:
+      - 5601
+    command: /opt/kibana-5.2.1-linux-x86_64/bin/kibana
+
+  logstash1:
+    image: centos
+    environment:
+      - "JAVA_HOME=/opt/jdk1.8.0_111"
+    volumes:
+      - "/home/min/opt/:/opt"
+      - "$PWD/logstash/logstash-logback.conf:/etc/logstash.conf:ro"
+      - "$PWD/logs/elk.log:/usr/elk.log:ro"
+    command: /opt/logstash-5.2.1/bin/logstash -f /etc/logstash.conf
+
+  springbootapp:
+    image: centos
+    environment:
+      - "JAVA_HOME=/opt/jdk1.8.0_111"
+    volumes:
+      - "$PWD/springbootapp/build/libs/springbootsample-0.0.1-SNAPSHOT.jar:/usr/springbootsample.jar"
+      - "/home/min/opt:/opt:ro"
+      - "$PWD/logs/elk.log:/usr/elk.log"
+    expose:
+      - "8080"
+    command: /opt/jdk1.8.0_111/bin/java -jar /usr/springbootsample.jar
