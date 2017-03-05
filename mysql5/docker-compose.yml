@@ -1,0 +1,10 @@
+version: "2"
+services:
+  mysql5:
+    image: mysql:5
+    container_name: my_mysql5
+    volumes:
+      - /media/dev/db/mysql5/data:/var/lib/mysql
+      - /home/min/.config/conf.d:/etc/mysql/conf.d
+    environment:
+      - MYSQL_ROOT_PASSWORD=changeit
