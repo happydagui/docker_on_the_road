@@ -1,0 +1,33 @@
+version: "2"
+services:
+  redis_master:
+    image: redis:3
+    container_name: my_redis_master
+    volumes:
+      - "$PWD/conf/redis-master.conf:/usr/local/etc/redis/redis.conf:ro"
+      - "/media/dev/db/redis/data_0/:/data"
+    expose:
+      - "6379"
+    command: redis-server /usr/local/etc/redis/redis.conf
+  redis_slave_1:
+    image: redis:3
+    container_name: my_redis_slave_1
+    volumes:
+      - "$PWD/conf/redis-slave.conf:/usr/local/etc/redis/redis.conf:ro"
+      - "/media/dev/db/redis/data_1/:/data"
+    expose:
+      - "6379"
+    links:
+      - redis_master
+    command: redis-server /usr/local/etc/redis/redis.conf
+  redis_slave_2:
+    image: redis:3
+    container_name: my_redis_slave_2
+    volumes:
+      - "$PWD/conf/redis-slave.conf:/usr/local/etc/redis/redis.conf:ro"
+      - "/media/dev/db/redis/data_2/:/data"
+    expose:
+      - "6379"
+    links:
+      - redis_master
+    command: redis-server /usr/local/etc/redis/redis.conf  
