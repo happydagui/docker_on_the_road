@@ -1,3 +1,8 @@
 [mysqld]
-slow_query_log=1
-long_query_time=3
+slow_query_log 			= 1
+slow_query_log_file		= /var/lib/mysql/mysql5-master-slow.log
+long_query_time			= 2
+
+server-id		= 1 					# (主从必须不一样)
+log-bin 		= mysql5-master-bin		# /var/lib/mysql/
+log-bin-index	= mysql5-master-bin.index

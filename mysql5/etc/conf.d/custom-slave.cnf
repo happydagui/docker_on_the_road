@@ -1,0 +1,8 @@
+[mysqld]
+slow_query_log 			= 1
+slow_query_log_file		= /var/lib/mysql/mysql5-slave-slow.log
+long_query_time			= 2
+
+server-id		= 2 							# (主从必须不一样)
+relay-log 		= mysql5-slave-relay-bin		# /var/lib/mysql/
+relay-log-index	= mysql5-slave-relay-bin.index
