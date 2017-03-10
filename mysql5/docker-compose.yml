@@ -5,6 +5,32 @@ services:
     container_name: my_mysql5
     volumes:
       - /media/dev/db/mysql5/data:/var/lib/mysql
-      - /home/min/.config/conf.d:/etc/mysql/conf.d
+      - /home/min/.config/conf.d/custom.cnf:/etc/mysql/conf.d/custom.cnf
     environment:
       - MYSQL_ROOT_PASSWORD=changeit
+
+  mysql5_slave:
+    image: mysql:5
+    container_name: my_mysql5_slave_1
+    links:
+      - mysql5:master
+    volumes:
+      - /home/min/.config/conf.d/custom-slave.cnf:/etc/mysql/conf.d/custom.cnf
+    environment:
+      - MYSQL_ROOT_PASSWORD=changeit
+
+  amoeba:
+    image: centos
+    environment:
+      - JAVA_HOME=/opt/jdk1.8.0_111
+      - AMOEBA_HOME=/opt/amoeba-mysql-3.0.5-RC
+    links:
+      - mysql5:master
+      - mysql5_slave:slave
+    expose:
+      - 8066
+    volumes:
+      - "/home/min/opt/:/opt"
+      - "$PWD/amoeba/conf/amoeba.xml:/opt/amoeba-mysql-3.0.5-RC/conf/amoeba.xml"
+      - "$PWD/amoeba/conf/dbServers.xml:/opt/amoeba-mysql-3.0.5-RC/conf/dbServers.xml"
+    command: /opt/amoeba-mysql-3.0.5-RC/bin/launcher
