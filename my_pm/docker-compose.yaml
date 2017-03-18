@@ -1,0 +1,19 @@
+version: '2'
+services:
+  phabricator: # code review
+    image: 'redpointgames/phabricator'
+    container_name: my_phabricator
+    environment:
+      - MYSQL_HOST=database
+      - MYSQL_USER=root
+      - MYSQL_PASS=changeit
+      - PHABRICATOR_REPOSITORY_PATH=/repos
+    volumes:
+      - "/media/dev/db/phabricator_home:/repos"
+    external_links:
+      - my_mysql5_master:database
+    networks: 
+      - mynet
+networks:
+  mynet:
+    external: true

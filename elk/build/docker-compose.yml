@@ -2,8 +2,10 @@ version: "2"
 services:
   elasticsearch1:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.2.1
-    # volumes:
+    volumes:
       # - esdata1:/usr/share/elasticsearch/data
+      - $PWD/elasticsearch/config/ik:/usr/share/elasticsearch/config/ik:ro
+      - $PWD/elasticsearch/plugins/ik:/usr/share/elasticsearch/plugins/ik:ro
     expose:
       - 9200
       - 9300

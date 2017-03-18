@@ -49,3 +49,6 @@ Logstash can also be installed from our package repositories using apt or yum. S
 
 发现 logs 目录属于 root 组，估计是那次使用root操作了，解决 `sudo chown -R min:min logs`
 data 权限问题 `sudo chown -R min:min data`
+
+
+- 集成 ik 分词

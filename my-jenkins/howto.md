@@ -14,4 +14,20 @@ docker-compose up -d
 
 ##简单运行一下　
 `docker run -it -d --rm --name my-jenkins -v /home/min/opt:/shares jenkins`
+
+## notes
+admin/admin
+
+(jenkins mirror)[http://mirror.xmission.com/jenkins/updates/update-center.json]
+代替　[http://updates.jenkins-ci.org/update-center.json]
+##　测试 maven 和 gradle
+
+```
+docker exec -it my_jenkins bash
+cd /hellomvn && /opt/apache-maven-<version/bin/mvn clean
+cd /hellogradle && /opt/gradle-<version/bin/gradle clean
+```
+
+然后使用 jenkins　执行构建
+
  

@@ -1,0 +1,16 @@
+version: '2'
+services:
+  web:
+    image: kanboard/kanboard:stable
+    container_name: my_kanboard
+    expose:
+      - 80
+    volumes:
+      - /media/dev/db/kanboard_home/data:/var/www/app/data
+      - /media/dev/db/kanboard_home/plugins:/var/www/app/plugins
+      # - /var/www/app/data/config.php
+    networks: 
+      - mynet
+networks:
+  mynet:
+    external: true

@@ -1,7 +1,7 @@
 # How to
 
 ## 运行
-
+运行 `docker network create -d bridge mynet`　创建共享网络（如果不存在的话）
 运行 `cp -r mysql/conf.d ~/.config/ && chmod -R 644 ~/.config/conf.d `
 运行 `docker-compose up -d`
 

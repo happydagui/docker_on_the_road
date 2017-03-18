@@ -1,10 +1,20 @@
 version: "2"
 services:
   my-jenkins:
-    image: jenkins
+    image: jenkins:latest
+    container_name: my_jenkins
     volumes:
-      - "/media/dev/workspaces/docker/my-jenkins/jenkins_home:/var/jenkins_home"
-      - "/home/min/opt:/shares:ro"
+      - /media/dev/db/jenkins_home:/var/jenkins_home
+      - /media/dev/devlib:/devlib
+      - /home/min/opt:/opt:ro
+      - $PWD/settings.xml:/var/jenkins_home/.m2/settings.xml:ro
+      - /home/min/Downloads/mvn:/hellomvn # test maven, ok
+      - /media/dev/workspaces/howto_gradle/helloworld:/hellogradle  # test gradle, ok
+    environment:
+      #- M2_HOME=/opt/apache-maven-3.3.9 # not required
+      - MAVEN_HOME=/opt/apache-maven-3.3.9
+      - GRADLE_HOME=/opt/gradle-3.4
+      - GRADLE_USER_HOME=/devlib/.gradle
     expose:
       - "8080"
       - "50000"
