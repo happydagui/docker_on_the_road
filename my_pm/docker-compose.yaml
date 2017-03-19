@@ -14,6 +14,55 @@ services:
       - my_mysql5_master:database
     networks: 
       - mynet
+  redmine:    # project manager
+    image: redmine:3.1
+    container_name: my_redmine
+    expose:
+      - 3000
+    external_links:
+      - my_mysql5_master:mysql
+    volumes:
+      - $PWD/redmine/database.yml:/usr/src/redmine/config/database.yml
+      - /media/dev/db/redmine_home/files:/usr/src/redmine/files
+      - /media/dev/db/redmine_home/plugins:/usr/src/redmine/plugins
+    networks:
+      - mynet
+  # gitlab-redis:
+  #   image: sameersbn/redis:latest
+  #   container_name: my_gitlab_redis
+  #   volumes:
+  #     - /media/dev/db/redis/data_gitlab:/var/lib/redis
+  #   networks:
+  #     - mynet
+  #   restart: always
+  gitlib:
+    image: sameersbn/gitlab:8.16.6
+    container_name: my_gitlab
+    ports:
+      - "10080:10080"
+    expose:
+      - "10080"
+      - "10022"
+    environment:
+      - DB_ADAPTER=mysql2
+      - DB_HOST=mysql
+      - DB_NAME=gitlabhq
+      - DB_USER=gitlab
+      - DB_PASS=password
+      - REDIS_HOST=redisio
+      - REDIS_PORT=6379
+      - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string
+      - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string
+      - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string
+      - GITLAB_PORT=10080
+      - GITLAB_SSH_PORT=10022
+    volumes:
+      - /media/dev/db/gitlab:/home/git/data
+    external_links:
+      - my_mysql5_master:mysql
+      - my_redis_master:redisio
+    networks:
+      - mynet
 networks:
   mynet:
     external: true
