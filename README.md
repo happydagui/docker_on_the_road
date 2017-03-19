@@ -1,12 +1,6 @@
 内容列表
 
-## 创建共用的网络，有共享需求的话，将docker-compose产生的容器加入该网络
-
-`docker network create -d bridge mynet`
-
-> mysql5　已经加入了此网络，其他需要使用数据库的需要加入此网络。
-
-## 使用　Docker和Docker Compose　构建
+## 使用　Docker和Docker Compose　组合应用
 
 - [nginx-tomcat2x-redis](nginx-tomcat2x-redis/howto.md)
 
@@ -26,10 +20,19 @@
 
 - [Mysql主从结构 + Amoeba 读写分离](mysql5/howto.md)
 
-- [Phabricator　代码审查](phabricator/howto.md)
+- [使用 gitlab+redmine+phabricator做项目管理](my_pm/howto.md)
+
+## 运行准备
+
+`docker network create -d bridge mynet`
+
+> 创建共用的网络，有共享需求的话，将docker-compose产生的容器加入该网络
+> mysql5集群和redis集群已经加入了此网络，其他需要使用数据库的需要加入此网络。
 
 
-## 不同 docker 容器之间跨网段访问
+*不同 docker 容器之间跨网段访问*
+
+> docker-compose　创建的网络默认不在一个网段上，不加入 mynet　网络的话，可以在宿主机上执行下面的操作来互通
 
 ```
 sudo su -
