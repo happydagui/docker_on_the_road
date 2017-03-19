@@ -22,27 +22,19 @@ services:
     external_links:
       - my_mysql5_master:mysql
     volumes:
-      - $PWD/redmine/database.yml:/usr/src/redmine/config/database.yml
+      - $PWD/redmine/database.yml:/usr/src/redmine/config/database.yml:ro
       - /media/dev/db/redmine_home/files:/usr/src/redmine/files
       - /media/dev/db/redmine_home/plugins:/usr/src/redmine/plugins
+      - /media/dev/db/redmine_home/gitrepo:/gitrepo # for redmine to clone from gitlab
     networks:
       - mynet
-  # gitlab-redis:
-  #   image: sameersbn/redis:latest
-  #   container_name: my_gitlab_redis
-  #   volumes:
-  #     - /media/dev/db/redis/data_gitlab:/var/lib/redis
-  #   networks:
-  #     - mynet
-  #   restart: always
   gitlib:
     image: sameersbn/gitlab:8.16.6
     container_name: my_gitlab
-    ports:
-      - "10080:10080"
-    expose:
-      - "10080"
-      - "10022"
+    depends_on:
+      - redmine
+    links:
+      - redmine:my_redmine
     environment:
       - DB_ADAPTER=mysql2
       - DB_HOST=mysql

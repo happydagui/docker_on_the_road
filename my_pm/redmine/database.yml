@@ -1,6 +1,6 @@
 production:
   adapter: mysql2
-  database: redmine
+  database: redminedb
   host: mysql
   username: root
   password: "changeit"
