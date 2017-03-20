@@ -2,6 +2,10 @@
 
 ## 使用　Docker和Docker Compose　组合应用
 
+- [使用 gitlab+redmine+phabricator做项目管理](my_pm/howto.md)
+
+> Gitlab 搭建私有代码仓库，redmine 负责项目管理, Issue　跟踪， phabricator 用于代码审查。
+
 - [nginx-tomcat2x-redis](nginx-tomcat2x-redis/howto.md)
 
 > 使用 nginx 作为负载均衡服务器，两个 tomcat 节点作为应用服务器，redis　作为共享的 session 服务器
@@ -19,8 +23,6 @@
 > 配置 Redis 集群
 
 - [Mysql主从结构 + Amoeba 读写分离](mysql5/howto.md)
-
-- [使用 gitlab+redmine+phabricator做项目管理](my_pm/howto.md)
 
 ## 运行准备
 
