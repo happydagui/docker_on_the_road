@@ -1,0 +1,20 @@
+version: '2'
+
+services:
+  mariadb:
+    image: 'bitnami/mariadb:latest'
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - '/path/to/mariadb-persistence:/bitnami/mariadb'
+  testlink:
+    image: 'bitnami/testlink:latest'
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - '/path/to/testlink-persistence:/bitnami/testlink'
+      - '/path/to/apache-persistence:/bitnami/apache'
+     -  '/path/to/php-persistence:/bitnami/php'
+    depends_on:
+      - mariadb

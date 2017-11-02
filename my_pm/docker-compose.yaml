@@ -25,16 +25,14 @@ services:
       - $PWD/redmine/database.yml:/usr/src/redmine/config/database.yml:ro
       - /media/dev/db/redmine_home/files:/usr/src/redmine/files
       - /media/dev/db/redmine_home/plugins:/usr/src/redmine/plugins
+      - /media/dev/db/redmine_home/themes:/usr/src/redmine/public/themes
       - /media/dev/db/redmine_home/gitrepo:/gitrepo # for redmine to clone from gitlab
+      - $PWD/redmine/Gemfile:/usr/src/redmine/Gemfile:ro
     networks:
       - mynet
   gitlib:
     image: sameersbn/gitlab:8.16.6
     container_name: my_gitlab
-    depends_on:
-      - redmine
-    links:
-      - redmine:my_redmine
     environment:
       - DB_ADAPTER=mysql2
       - DB_HOST=mysql

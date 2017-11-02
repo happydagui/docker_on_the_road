@@ -6,3 +6,5 @@ long_query_time			= 2
 server-id		= 1 					# (主从必须不一样)
 log-bin 		= mysql5-master-bin		# /var/lib/mysql/
 log-bin-index	= mysql5-master-bin.index
+
+innodb_file_per_table = 1

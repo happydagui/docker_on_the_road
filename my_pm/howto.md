@@ -3,6 +3,8 @@
 
 假定已经安装好 docker 和 docker-compose。
 
+`docker-compose -f docker-compose-with-zentaopms.yaml up -d`
+
 ```
 docker pull redpointgames/phabricator
 docker pull sameersbn/gitlab:8.16.6
@@ -12,6 +14,8 @@ docker start my_mysql5_master
 docker start my_redis_master
 docker-compose up -d
 ```
+
+> redmine 启动时必须连接互联网
 
 使用 `docker inspect <container_name>`查看各个容器 ip，假定分配如下 ip:
 
@@ -192,11 +196,96 @@ This Phabricator install is not configured with any enabled authentication provi
 
 ---------------------------------
 todo:
-按照phabricator提示修改MySQL参数
-max_allowed_packet=4194304 # 现值33554432
-sql_mode=STRICT_ALL_TABLES # 现值"ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+
+**MySQL ONLY_FULL_GROUP_BY Mode Set**
+On database host "database", the global sql_mode is set to ONLY_FULL_GROUP_BY. It is strongly encouraged that you disable this mode when running Phabricator.
+
+With ONLY_FULL_GROUP_BY enabled, MySQL rejects queries for which the select list or (as of MySQL 5.0.23) HAVING list refer to nonaggregated columns that are not named in the GROUP BY clause. More importantly, Phabricator does not work properly with this mode enabled.
+
+You can find more information about this mode (and how to configure it) in the MySQL manual. Usually, it is sufficient to change the sql_mode in your my.cnf file (in the [mysqld] section) and then restart mysqld:
+
+sql_mode=STRICT_ALL_TABLES
+
+
+(Note that if you run other applications against the same database, they may not work with ONLY_FULL_GROUP_BY. Be careful about enabling it in these cases and consider migrating Phabricator to a different database.)
+
+The current MySQL configuration has this value:
+sql_mode  "ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION"
+
+If you are using Amazon RDS, some of the instructions above may not apply to you. See User Guide: Amazon RDS for discussion of Amazon RDS.
+
+**Small MySQL "max_allowed_packet"**
+On host "database", MySQL is configured with a small "max_allowed_packet" (4194304), which may cause some large writes to fail. The recommended minimum value for this setting is "33554432".
+
+The current MySQL configuration has this value:
+max_allowed_packet  "4194304"
+
+If you are using Amazon RDS, some of the instructions above may not apply to you. See User Guide: Amazon RDS for discussion of Amazon RDS.
+
+**MySQL May Run Slowly**
+Database host "database" is configured with a very small innodb_buffer_pool_size (128 MB). This may cause poor database performance and lock exhaustion.
+
+There are no hard-and-fast rules to setting an appropriate value, but a reasonable starting point for a standard install is something like 40% of the total memory on the machine. For example, if you have 4GB of RAM on the machine you have installed Phabricator on, you might set this value to 1600M.
+
+You can read more about this option in the MySQL documentation to help you make a decision about how to configure it for your use case. There are no concerns specific to Phabricator which make it different from normal workloads with respect to this setting.
+
+To adjust the setting, add something like this to your my.cnf file (in the [mysqld] section), replacing 1600M with an appropriate value for your host and use case. Then restart mysqld:
+
+innodb_buffer_pool_size=1600M
+
+
+If you're satisfied with the current setting, you can safely ignore this setup warning.
+
+The current MySQL configuration has this value:
+innodb_buffer_pool_size "134217728"
+
+If you are using Amazon RDS, some of the instructions above may not apply to you. See User Guide: Amazon RDS for discussion of Amazon RDS.
 
 
 
+
+
+*为连接到互联网络时Redmine 启动失败*
+[2017-03-20 14:38:14] INFO  going to shutdown ...
+[2017-03-20 14:38:14] INFO  WEBrick::HTTPServer#start done.
+Exiting
+Fetching source index from https://rubygems.org/
+
+Retrying fetcher due to error (2/4): Bundler::HTTPError Could not fetch specs from https://rubygems.org/
+Retrying fetcher due to error (3/4): Bundler::HTTPError Could not fetch specs from https://rubygems.org/
+Retrying fetcher due to error (4/4): Bundler::HTTPError Could not fetch specs from https://rubygems.org/
+Could not fetch specs from https://rubygems.org/
+
+
+Redmine Plugins: 
+[https://github.com/peclik/clipboard_image_paste]
+[http://www.redmine.org/plugins/scrum-plugin]
+[https://bitbucket.org/haru_iida/redmine_code_review/downloads]
+
+
+> install via `bundle exec rake redmine:plugins:migrate`
+
+
+[https://hub.docker.com/r/cptactionhank/atlassian-jira/]
+
+
+
+Readme Themes
+
+[https://www.redmineup.com/pages/themes/circle]
+[http://www.redminethemes.org/?view=datavw]
+[http://pixel-cookers.github.io/redmine-theme/]
+[https://github.com/pixel-cookers/]
+
+Installation
+
+    Download the theme
+    Unzip it into ../public/themes/. This would result in a directory-path to application.css like:
+
+    ../public/themes/circle/stylesheets/application.css
+
+    You now may need to restart Redmine so that it shows the newly installed theme in the list of available themes.
+    Go to "Administration -> Settings" -> "Display" and select your newly created theme in the "Theme" drop-down list. Save your settings.
+    Redmine should now be displayed using the selected theme.
 
 

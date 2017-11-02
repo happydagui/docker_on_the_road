@@ -1,0 +1,39 @@
+version: '2'
+services:
+  zentaopms:
+    image: tutum/lamp
+    container_name: my_zentaopms
+    volumes:
+      - $PWD/apache2/000-default.conf:/etc/apache2/sites-available/000-default.conf:ro
+      - /home/min/opt/zentaopms:/var/www/html/zentaopms
+    external_links:
+      - my_mysql5_master:database
+    networks:
+      - mynet
+
+  gitlib:
+    image: sameersbn/gitlab:8.16.6
+    container_name: my_gitlab
+    environment:
+      - DB_ADAPTER=mysql2
+      - DB_HOST=mysql
+      - DB_NAME=gitlabhq
+      - DB_USER=gitlab
+      - DB_PASS=password
+      - REDIS_HOST=redisio
+      - REDIS_PORT=6379
+      - GITLAB_SECRETS_DB_KEY_BASE=long-and-random-alpha-numeric-string
+      - GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string
+      - GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string
+      - GITLAB_PORT=10080
+      - GITLAB_SSH_PORT=10022
+    volumes:
+      - /media/dev/db/gitlab:/home/git/data
+    external_links:
+      - my_mysql5_master:mysql
+      - my_redis_master:redisio
+    networks:
+      - mynet
+networks:
+  mynet:
+    external: true
